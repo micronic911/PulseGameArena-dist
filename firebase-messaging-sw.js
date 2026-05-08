@@ -14,11 +14,13 @@ const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: payload.notification.icon || '/favicon.ico'
-  };
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  // Customize notification here only if it's a data message
+  if (!payload.notification && payload.data) {
+    const notificationTitle = payload.data.title || 'Notification';
+    const notificationOptions = {
+      body: payload.data.body,
+      icon: payload.data.icon || '/favicon.ico'
+    };
+    self.registration.showNotification(notificationTitle, notificationOptions);
+  }
 });
